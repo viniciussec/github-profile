@@ -8,6 +8,7 @@ type ButtonProps = {
   subtitle: string;
   icon: "bio" | "orgs" | "repositories" | "followers";
   isLast?: boolean;
+  onPress?: () => void;
 };
 
 export default function Button({
@@ -15,6 +16,7 @@ export default function Button({
   subtitle,
   icon,
   isLast = false,
+  onPress,
 }: ButtonProps) {
   function getIcon(icon: ButtonProps["icon"]) {
     switch (icon) {
@@ -39,6 +41,7 @@ export default function Button({
           borderBottomWidth: isLast ? 0 : 1,
         },
       ]}
+      onPress={onPress}
     >
       <View style={styles.mainPart}>
         <View style={styles.icon}>{getIcon(icon)}</View>
