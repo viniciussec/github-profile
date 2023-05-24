@@ -14,7 +14,7 @@ import { useState } from "react";
 import Button from "../components/Button";
 import { NavigationProp } from "@react-navigation/native";
 
-type User = {
+export type User = {
   login: string;
   avatar_url: string;
   followers_url: string;
@@ -34,13 +34,13 @@ export default function Home({ navigation }: HomeScreenProps) {
   const defaultUser = {
     login: "--",
     avatar_url: "https://static.thenounproject.com/png/1014492-200.png",
-    followers_url: "--",
-    following_url: "--",
-    subscriptions_url: "--",
-    organizations_url: "--",
-    repos_url: "--",
+    followers_url: "",
+    following_url: "",
+    subscriptions_url: "",
+    organizations_url: "",
+    repos_url: "",
     name: "--",
-    bio: "--",
+    bio: "",
   };
 
   const [user, setUser] = useState<User>(defaultUser);
@@ -87,22 +87,26 @@ export default function Home({ navigation }: HomeScreenProps) {
       <Text style={styles.username}>{"@" + user?.login}</Text>
       <View style={styles.buttonSection}>
         <Button
+          disabled={!user.bio}
           onPress={() => navigation.navigate("Bio", { user })}
           title="Bio"
           subtitle="Um pouco sobre o usuário"
           icon="bio"
         />
         <Button
+          disabled={!user.organizations_url}
           title="Orgs"
           subtitle="Organizações que o usuário faz parte"
           icon="orgs"
         />
         <Button
+          disabled={!user.repos_url}
           title="Repositórios"
           subtitle="Lista contendo todos os repositórios"
           icon="repositories"
         />
         <Button
+          disabled={!user.followers_url}
           isLast
           title="Seguidores"
           subtitle="Lista de seguidores"

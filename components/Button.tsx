@@ -9,6 +9,7 @@ type ButtonProps = {
   icon: "bio" | "orgs" | "repositories" | "followers";
   isLast?: boolean;
   onPress?: () => void;
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -17,6 +18,7 @@ export default function Button({
   icon,
   isLast = false,
   onPress,
+  disabled = false,
 }: ButtonProps) {
   function getIcon(icon: ButtonProps["icon"]) {
     switch (icon) {
@@ -33,15 +35,23 @@ export default function Button({
     }
   }
 
+  function handlePress() {
+    if (!disabled && onPress) {
+      onPress();
+    }
+  }
+
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={[
         styles.button,
         {
           borderBottomWidth: isLast ? 0 : 1,
+          opacity: disabled ? 0.5 : 1,
         },
       ]}
-      onPress={onPress}
+      onPress={handlePress}
     >
       <View style={styles.mainPart}>
         <View style={styles.icon}>{getIcon(icon)}</View>
