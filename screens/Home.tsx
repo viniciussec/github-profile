@@ -95,6 +95,7 @@ export default function Home({ navigation }: HomeScreenProps) {
         />
         <Button
           disabled={!user.organizations_url}
+          onPress={() => navigation.navigate("Organizations", { user })}
           title="Orgs"
           subtitle="Organizações que o usuário faz parte"
           icon="orgs"
