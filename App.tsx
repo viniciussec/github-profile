@@ -1,55 +1,62 @@
 import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  TouchableHighlight,
+} from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Button from "./components/Button";
 
 type User = {
   login: string;
-  id: number;
-  node_id: string;
   avatar_url: string;
-  gravatar_id: string;
-  url: string;
-  html_url: string;
   followers_url: string;
   following_url: string;
-  gists_url: string;
-  starred_url: string;
   subscriptions_url: string;
   organizations_url: string;
   repos_url: string;
-  events_url: string;
-  received_events_url: string;
-  type: string;
-  site_admin: false;
   name: string;
-  company: string;
-  blog: string;
-  location: string;
-  email: string;
-  hireable: string;
   bio: string;
-  twitter_username: string;
-  public_repos: number;
-  public_gists: number;
-  followers: number;
-  following: number;
-  created_at: string;
-  updated_at: string;
 };
 
 export default function App() {
-  const [user, setUser] = useState<User>();
+  const defaultUser = {
+    login: "--",
+    avatar_url: "https://static.thenounproject.com/png/1014492-200.png",
+    followers_url: "--",
+    following_url: "--",
+    subscriptions_url: "--",
+    organizations_url: "--",
+    repos_url: "--",
+    name: "--",
+    bio: "--",
+  };
 
-  useEffect(() => {
-    fetch("https://api.github.com/users/viniciussec")
-      .then((response) => response.json())
-      .then((data) => setUser(data));
-  });
+  const [user, setUser] = useState<User>(defaultUser);
+
+  const [showInput, setShowInput] = useState(false);
+
+  const [search, setSearch] = useState("");
+
+  async function handleGlassPress() {
+    if (!showInput) {
+      setShowInput(true);
+    } else if (search !== "") {
+      setShowInput(false);
+      const response = await fetch(`https://api.github.com/users/${search}`);
+      setSearch("");
+      const data = await response.json();
+      setUser(data);
+    } else {
+      setShowInput(false);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -59,78 +66,44 @@ export default function App() {
             uri: user?.avatar_url,
           }}
           style={styles.image}
-        ></Image>
-        <TouchableOpacity style={styles.glass}>
+        />
+        {showInput && (
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            style={styles.input}
+          ></TextInput>
+        )}
+        <TouchableHighlight onPress={handleGlassPress} style={styles.glass}>
           <Entypo name="magnifying-glass" size={30} color="white" />
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
       <Text style={styles.name}>{user?.name}</Text>
-      <Text style={styles.username}>@{user?.login}</Text>
+      <Text style={styles.username}>{"@" + user?.login}</Text>
       <View style={styles.buttonSection}>
-        <TouchableOpacity style={styles.button}>
-          <View style={styles.mainPart}>
-            <View style={styles.icon}>
-              <Ionicons name="person-outline" size={27} color="black" />
-            </View>
-            <View>
-              <Text style={styles.buttonTitle}>Bio</Text>
-              <Text style={styles.buttonSubtitle}>
-                Um pouco sobre o usuário
-              </Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <View style={styles.mainPart}>
-            <View style={styles.icon}>
-              <FontAwesome5 name="headset" size={24} color="black" />
-            </View>
-            <View>
-              <Text style={styles.buttonTitle}>Orgs</Text>
-              <Text style={styles.buttonSubtitle}>
-                Organizações que o usuário faz parte
-              </Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <View style={styles.mainPart}>
-            <View style={styles.icon}>
-              <AntDesign name="filetext1" size={24} color="black" />
-            </View>
-            <View>
-              <Text style={styles.buttonTitle}>Repositórios</Text>
-              <Text style={styles.buttonSubtitle}>
-                Lista contendo todos os repositórios
-              </Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              borderBottomWidth: 0,
-            },
-          ]}
-        >
-          <View style={styles.mainPart}>
-            <View style={styles.icon}>
-              <AntDesign name="smileo" size={24} color="black" />
-            </View>
-            <View>
-              <Text style={styles.buttonTitle}>Seguidores</Text>
-              <Text style={styles.buttonSubtitle}>Lista de seguidores</Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={24} color="black" />
-        </TouchableOpacity>
+        <Button title="Bio" subtitle="Um pouco sobre o usuário" icon="bio" />
+        <Button
+          title="Orgs"
+          subtitle="Organizações que o usuário faz parte"
+          icon="orgs"
+        />
+        <Button
+          title="Repositórios"
+          subtitle="Lista contendo todos os repositórios"
+          icon="repositories"
+        />
+        <Button
+          isLast
+          title="Seguidores"
+          subtitle="Lista de seguidores"
+          icon="followers"
+        />
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.resetButton}>
+        <TouchableOpacity
+          onPress={() => setUser(defaultUser)}
+          style={styles.resetButton}
+        >
           <MaterialIcons name="logout" size={24} color="black" />
           <Text>Resetar</Text>
         </TouchableOpacity>
@@ -165,6 +138,7 @@ const styles = StyleSheet.create({
     textShadowColor: "#585858",
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 10,
+    zIndex: 2,
   },
   name: {
     fontSize: 22,
@@ -242,5 +216,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingTop: 30,
     marginTop: 20,
+  },
+  input: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    width: 150,
+    borderWidth: 1,
+    height: 40,
+    bottom: 0,
+    padding: 10,
+    position: "absolute",
   },
 });
