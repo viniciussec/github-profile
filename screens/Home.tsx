@@ -108,6 +108,7 @@ export default function Home({ navigation }: HomeScreenProps) {
           icon="repositories"
         />
         <Button
+          onPress={() => navigation.navigate("Followers", { user })}
           disabled={!user.followers_url}
           isLast
           title="Seguidores"
