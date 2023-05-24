@@ -5,64 +5,60 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  FlatList,
   ScrollView,
 } from "react-native";
 import { User } from "./Home";
 import { Ionicons } from "@expo/vector-icons";
 
-type Organization = {
-  login: string;
-  avatar_url: string;
+type Repository = {
+  name: string;
   description: string;
 };
 
-export default function Organizations({ navigation, route }: any) {
+export default function Repositories({ navigation, route }: any) {
   const { user }: { user: User } = route.params;
 
-  const [organizations, setOrganizations] = useState<Organization[]>();
+  const [repositories, setRepositories] = useState<Repository[]>([]);
 
-  async function loadOrganizations() {
-    const response = await fetch(user.organizations_url);
+  async function loadRepositories() {
+    const response = await fetch(user.repos_url);
 
-    setOrganizations(await response.json());
+    setRepositories(await response.json());
   }
 
   useEffect(() => {
-    loadOrganizations();
+    loadRepositories();
   }, []);
 
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
-        <View style={styles.organizationsList}>
+        <View style={styles.repositoriesList}>
           <TouchableOpacity
             onPress={() => navigation.navigate("Home")}
             style={styles.backIcon}
           >
             <Ionicons name="chevron-back" size={30} color="black" />
           </TouchableOpacity>
-          <Text style={styles.title}>Organizações</Text>
-          {organizations?.map((organization, index) => (
+          <Text style={styles.title}>Repositórios</Text>
+          {repositories?.map((repository, index) => (
             <View
               key={index}
               style={[
                 styles.card,
                 {
                   borderBottomEndRadius:
-                    index === organizations.length - 1 ? 20 : 0,
+                    index === repositories.length - 1 ? 20 : 0,
                 },
                 {
                   borderBottomStartRadius:
-                    index === organizations.length - 1 ? 20 : 0,
+                    index === repositories.length - 1 ? 20 : 0,
                 },
               ]}
             >
-              <Image
-                style={styles.image}
-                source={{ uri: organization.avatar_url }}
-              ></Image>
-              <Text style={styles.login}>{organization.login}</Text>
-              <Text style={styles.description}>{organization.description}</Text>
+              <Text style={styles.login}>{repository.name}</Text>
+              <Text style={styles.description}>{repository.description}</Text>
             </View>
           ))}
         </View>
@@ -94,7 +90,7 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 35,
   },
-  organizationsList: {
+  repositoriesList: {
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
@@ -102,7 +98,8 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 20,
     backgroundColor: "white",
-    marginVertical: 50,
+    marginTop: 50,
+    marginBottom: 50,
   },
   title: {
     fontSize: 22,
@@ -123,6 +120,8 @@ const styles = StyleSheet.create({
     left: 10,
   },
   scrollView: {
+    height: "100%",
     backgroundColor: "#f7f8fc",
-  },
+
+  }
 });

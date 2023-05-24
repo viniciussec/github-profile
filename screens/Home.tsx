@@ -102,6 +102,7 @@ export default function Home({ navigation }: HomeScreenProps) {
         />
         <Button
           disabled={!user.repos_url}
+          onPress={() => navigation.navigate("Repositories", { user })}
           title="Repositórios"
           subtitle="Lista contendo todos os repositórios"
           icon="repositories"

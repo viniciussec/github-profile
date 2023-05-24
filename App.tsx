@@ -3,6 +3,7 @@ import Home from "./screens/Home";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Bio from "./screens/Bio";
 import Organizations from "./screens/Organizations";
+import Repositories from "./screens/Repositories";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,11 @@ export default function App() {
           options={{ headerShown: false }}
           name="Organizations"
           component={Organizations}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Repositories"
+          component={Repositories}
         />
       </Stack.Navigator>
     </NavigationContainer>
