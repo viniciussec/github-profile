@@ -3,13 +3,12 @@ import {
   Text,
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from "react-native";
 import { User } from "./Home";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Repository = {
   name: string;
@@ -32,38 +31,40 @@ export default function Repositories({ navigation, route }: any) {
   }, []);
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <View style={styles.repositoriesList}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
-            style={styles.backIcon}
-          >
-            <Ionicons name="chevron-back" size={30} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Repositórios</Text>
-          {repositories?.map((repository, index) => (
-            <View
-              key={index}
-              style={[
-                styles.card,
-                {
-                  borderBottomEndRadius:
-                    index === repositories.length - 1 ? 20 : 0,
-                },
-                {
-                  borderBottomStartRadius:
-                    index === repositories.length - 1 ? 20 : 0,
-                },
-              ]}
+    <SafeAreaView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <View style={styles.repositoriesList}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backIcon}
             >
-              <Text style={styles.login}>{repository.name}</Text>
-              <Text style={styles.description}>{repository.description}</Text>
-            </View>
-          ))}
+              <Ionicons name="chevron-back" size={30} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Repositórios</Text>
+            {repositories?.map((repository, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.card,
+                  {
+                    borderBottomEndRadius:
+                      index === repositories.length - 1 ? 20 : 0,
+                  },
+                  {
+                    borderBottomStartRadius:
+                      index === repositories.length - 1 ? 20 : 0,
+                  },
+                ]}
+              >
+                <Text style={styles.login}>{repository.name}</Text>
+                <Text style={styles.description}>{repository.description}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -98,7 +99,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 20,
     backgroundColor: "white",
-    marginTop: 50,
     marginBottom: 50,
   },
   title: {
@@ -122,6 +122,5 @@ const styles = StyleSheet.create({
   scrollView: {
     height: "100%",
     backgroundColor: "#f7f8fc",
-
-  }
+  },
 });

@@ -7,10 +7,12 @@ import {
   View,
   TextInput,
   TouchableHighlight,
+  Alert,
+  SafeAreaView,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { NavigationProp } from "@react-navigation/native";
 
@@ -30,7 +32,7 @@ export interface HomeScreenProps {
   navigation: NavigationProp<any>;
 }
 
-export default function Home({ navigation }: HomeScreenProps) {
+export default function Home({ navigation, route }: any) {
   const defaultUser = {
     login: "--",
     avatar_url: "https://static.thenounproject.com/png/1014492-200.png",
@@ -43,20 +45,38 @@ export default function Home({ navigation }: HomeScreenProps) {
     bio: "",
   };
 
-  const [user, setUser] = useState<User>(defaultUser);
+  const [user, setUser] = useState<User>();
 
   const [showInput, setShowInput] = useState(false);
 
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (route.params?.user) {
+      setUser(route.params.user);
+    } else {
+      setUser(defaultUser);
+    }
+  }, [route.params?.user]);
 
   async function handleGlassPress() {
     if (!showInput) {
       setShowInput(true);
     } else if (search !== "") {
       setShowInput(false);
-      const response = await fetch(`https://api.github.com/users/${search}`);
+      const response = await fetch(
+        `https://api.github.com/users/${search}`
+      ).catch((e) => Alert.alert(e.message));
+
+      if (response?.status !== 200) {
+        Alert.alert("Usuário não encontrado");
+        setSearch("");
+        setUser(defaultUser);
+        return;
+      }
+
       setSearch("");
-      const data = await response.json();
+      const data = await response?.json();
       setUser(data);
     } else {
       setShowInput(false);
@@ -64,7 +84,7 @@ export default function Home({ navigation }: HomeScreenProps) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <Image
           source={{
@@ -87,29 +107,29 @@ export default function Home({ navigation }: HomeScreenProps) {
       <Text style={styles.username}>{"@" + user?.login}</Text>
       <View style={styles.buttonSection}>
         <Button
-          disabled={!user.bio}
-          onPress={() => navigation.navigate("Bio", { user })}
+          disabled={!user?.bio}
+          onPress={() => navigation.push("Bio", { user })}
           title="Bio"
           subtitle="Um pouco sobre o usuário"
           icon="bio"
         />
         <Button
-          disabled={!user.organizations_url}
-          onPress={() => navigation.navigate("Organizations", { user })}
+          disabled={!user?.organizations_url}
+          onPress={() => navigation.push("Organizations", { user })}
           title="Orgs"
           subtitle="Organizações que o usuário faz parte"
           icon="orgs"
         />
         <Button
-          disabled={!user.repos_url}
-          onPress={() => navigation.navigate("Repositories", { user })}
+          disabled={!user?.repos_url}
+          onPress={() => navigation.push("Repositories", { user })}
           title="Repositórios"
           subtitle="Lista contendo todos os repositórios"
           icon="repositories"
         />
         <Button
-          onPress={() => navigation.navigate("Followers", { user })}
-          disabled={!user.followers_url}
+          onPress={() => navigation.push("Followers", { user })}
+          disabled={!user?.followers_url}
           isLast
           title="Seguidores"
           subtitle="Lista de seguidores"
@@ -126,7 +146,7 @@ export default function Home({ navigation }: HomeScreenProps) {
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 

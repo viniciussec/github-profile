@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { User } from "./Home";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Organization = {
   login: string;
@@ -32,42 +33,46 @@ export default function Organizations({ navigation, route }: any) {
   }, []);
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <View style={styles.organizationsList}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
-            style={styles.backIcon}
-          >
-            <Ionicons name="chevron-back" size={30} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Organizações</Text>
-          {organizations?.map((organization, index) => (
-            <View
-              key={index}
-              style={[
-                styles.card,
-                {
-                  borderBottomEndRadius:
-                    index === organizations.length - 1 ? 20 : 0,
-                },
-                {
-                  borderBottomStartRadius:
-                    index === organizations.length - 1 ? 20 : 0,
-                },
-              ]}
+    <SafeAreaView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <View style={styles.organizationsList}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backIcon}
             >
-              <Image
-                style={styles.image}
-                source={{ uri: organization.avatar_url }}
-              ></Image>
-              <Text style={styles.login}>{organization.login}</Text>
-              <Text style={styles.description}>{organization.description}</Text>
-            </View>
-          ))}
+              <Ionicons name="chevron-back" size={30} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Organizações</Text>
+            {organizations?.map((organization, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.card,
+                  {
+                    borderBottomEndRadius:
+                      index === organizations.length - 1 ? 20 : 0,
+                  },
+                  {
+                    borderBottomStartRadius:
+                      index === organizations.length - 1 ? 20 : 0,
+                  },
+                ]}
+              >
+                <Image
+                  style={styles.image}
+                  source={{ uri: organization.avatar_url }}
+                ></Image>
+                <Text style={styles.login}>{organization.login}</Text>
+                <Text style={styles.description}>
+                  {organization.description}
+                </Text>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -124,5 +129,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     backgroundColor: "#f7f8fc",
+    height: "100%",
   },
 });

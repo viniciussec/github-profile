@@ -5,11 +5,11 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from "react-native";
 import { User } from "./Home";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Followers({ navigation, route }: any) {
   const { user }: { user: User } = route.params;
@@ -27,41 +27,44 @@ export default function Followers({ navigation, route }: any) {
   }, []);
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <View style={styles.followersList}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
-            style={styles.backIcon}
-          >
-            <Ionicons name="chevron-back" size={30} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Seguidores</Text>
-          {followers?.map((follower, index) => (
-            <View
-              key={index}
-              style={[
-                styles.card,
-                {
-                  borderBottomEndRadius:
-                    index === followers.length - 1 ? 20 : 0,
-                },
-                {
-                  borderBottomStartRadius:
-                    index === followers.length - 1 ? 20 : 0,
-                },
-              ]}
+    <SafeAreaView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <View style={styles.followersList}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backIcon}
             >
-              <Image
-                style={styles.image}
-                source={{ uri: follower.avatar_url }}
-              />
-              <Text style={styles.login}>{follower.login}</Text>
-            </View>
-          ))}
+              <Ionicons name="chevron-back" size={30} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.title}>Seguidores</Text>
+            {followers?.map((follower, index) => (
+              <TouchableOpacity
+                onPress={() => navigation.push("Home", { user: follower })}
+                key={index}
+                style={[
+                  styles.card,
+                  {
+                    borderBottomEndRadius:
+                      index === followers.length - 1 ? 20 : 0,
+                  },
+                  {
+                    borderBottomStartRadius:
+                      index === followers.length - 1 ? 20 : 0,
+                  },
+                ]}
+              >
+                <Image
+                  style={styles.image}
+                  source={{ uri: follower.avatar_url }}
+                />
+                <Text style={styles.login}>{follower.login}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
   },
   card: {
     borderColor: "#ccc",
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
     padding: 20,
@@ -96,7 +99,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 20,
     backgroundColor: "white",
-    marginTop: 50,
     marginBottom: 50,
   },
   title: {
