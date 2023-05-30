@@ -18,7 +18,7 @@ type Repository = {
 export default function Repositories({ navigation, route }: any) {
   const { user }: { user: User } = route.params;
 
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [repositories, setRepositories] = useState<Repository[]>();
 
   async function loadRepositories() {
     const response = await fetch(user.repos_url);
@@ -42,6 +42,14 @@ export default function Repositories({ navigation, route }: any) {
               <Ionicons name="chevron-back" size={30} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>Repositórios</Text>
+            {repositories == null && (
+              <Text style={{ marginBottom: 20 }}>Carregando...</Text>
+            )}
+            {repositories?.length === 0 && (
+              <Text style={{ marginBottom: 20 }}>
+                O usuário não possui nenhum repositório
+              </Text>
+            )}
             {repositories?.map((repository, index) => (
               <View
                 key={index}

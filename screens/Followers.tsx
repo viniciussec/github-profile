@@ -38,6 +38,14 @@ export default function Followers({ navigation, route }: any) {
               <Ionicons name="chevron-back" size={30} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>Seguidores</Text>
+            {followers == null && (
+              <Text style={{ marginBottom: 20 }}>Carregando...</Text>
+            )}
+            {followers?.length === 0 && (
+              <Text style={{ marginBottom: 20 }}>
+                O usuário não possui nenhum seguidor
+              </Text>
+            )}
             {followers?.map((follower, index) => (
               <TouchableOpacity
                 onPress={() => navigation.push("Home", { user: follower })}

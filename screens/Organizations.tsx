@@ -44,6 +44,14 @@ export default function Organizations({ navigation, route }: any) {
               <Ionicons name="chevron-back" size={30} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>Organizações</Text>
+            {organizations == null && (
+              <Text style={{ marginBottom: 20 }}>Carregando...</Text>
+            )}
+            {organizations?.length === 0 && (
+              <Text style={{ marginBottom: 20 }}>
+                O usuário não pertence a nenhuma organização
+              </Text>
+            )}
             {organizations?.map((organization, index) => (
               <View
                 key={index}
